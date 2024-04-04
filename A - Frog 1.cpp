@@ -1,6 +1,6 @@
 /**
  *    author:  _Berlin_
- *    created: 03.04.2024 02:59:17 PM
+ *    created: 04.04.2024 10:31:51 AM
 **/
 #include <bits/stdc++.h>
 
@@ -16,29 +16,54 @@ using namespace std;
 const int N = 1e5 + 9;
 const int inf = 1e9;
 
-int n, h[N], dp[N]; // n = number of stones, h = height of the stones, dp = dp array to store the cost
+int n, h[N], dp[N];
 
-/**
- * @brief Function to calculate the minimum cost incurred by the frog to reach the last stone
- * @param i Current stone position
- * @return Minimum cost to reach the last stone from the current position
- */
 int frog(int i) {
-  if(i > n) return inf; // if the frog jumps beyond the last stone then the cost is infinite 
-  if(i == n) return 0; // if the frog is at the last stone then the cost is 0
-  if(dp[i] != -1) return dp[i]; // if the cost is already calculated then return the cost
-  int ans = abs(h[i] - h[i + 1]) + frog(i + 1); // cost to jump to the next stone from the current stone 
-  ans = min(ans, abs(h[i] - h[i + 2]) + frog(i + 2)); // cost to jump to the stone after the next stone from the current stone 
-  return dp[i] = ans; // store the cost in the dp array
+  if(i > n) return inf;
+  if(i == n) return 0;
+  int &ans = dp[i];
+  if(ans != -1) return ans;
+  ans = abs(h[i] - h[i + 1]) + frog(i + 1);
+  ans = min(ans, abs(h[i] - h[i + 2]) + frog(i + 2));
+  return ans;
+}
+
+int ffrog(int i) {
+  if(i < 0) return inf;
+  if(i == 1) return 0;
+  int &ans = dp[i];
+  if(ans != -1) return ans;
+  ans = abs(h[i] - h[i - 1]) + ffrog(i - 1);
+  ans = min(ans, abs(h[i] - h[i - 2]) + ffrog(i - 2));
+  return ans;
 }
 
 int32_t main() {
   ios_base::sync_with_stdio(0);
   cin.tie(0);
-  memset(dp, -1, sizeof dp); // initialize the dp array with -1 
   cin >> n;
-  for(int i = 1; i <= n; i++) cin >> h[i]; // input the height of the stones
+  for(int i = 1; i <= n; i++){
+    cin >> h[i];
+  }
+  memset(dp, -1, sizeof dp);
+
+  // recursive
   cout << frog(1) << endl;
-  
+  cout << ffrog(n) << endl;
+
+  // iterative
+  for(int i = n; i >= 1; i--) {
+    if(i == n) {
+      dp[i] = 0;
+    }else {
+      int &ans = dp[i];
+      ans = abs(h[i] - h[i + 1]) + dp[i + 1];
+      if(i + 2 <= n) {
+        ans = min(ans, abs(h[i] - h[i + 2]) + dp[i + 2]);
+      }
+    }
+  }
+  cout << dp[1] << endl;
+
   return 0;
 }
