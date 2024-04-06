@@ -1,6 +1,6 @@
 /**
  *    author:  _Berlin_
- *    created: 02.04.2024 10:36:16 AM
+ *    created: 07.04.2024 12:53:23 AM
 **/
 #include <bits/stdc++.h>
 
@@ -13,17 +13,21 @@ using namespace std;
 #endif
 
 #define endl '\n'
-#define int long long
+#define ll long long
 const int N = 1e5 + 9;
 
-int v[N], w[N], n, W, dp[105][N];
 
-int knap(int i, int weight) {
+int n, capacity, weight[N], value[N];
+ll dp[105][N];
+
+ll knapsack(int i, int curr_weight) {
   if(i == n + 1) return 0;
-  if(dp[i][weight] != -1) return dp[i][weight];
-  int ans = knap(i + 1, weight);
-  if(weight + w[i] <= W) ans = max(ans, knap(i + 1, weight + w[i]) + v[i]);
-  dp[i][weight] = ans;
+  ll &ans = dp[i][curr_weight];
+  if(ans != -1) return ans;
+  ans = knapsack(i + 1, curr_weight);
+  if(curr_weight + weight[i] <= capacity) {
+    ans = max(ans, value[i] + knapsack(i + 1, curr_weight + weight[i]));
+  }
   return ans;
 }
 
@@ -32,11 +36,25 @@ int32_t main() {
   cin.tie(0);
 
   memset(dp, -1, sizeof dp);
-  cin >> n >> W;
+  cin >> n >> capacity;
   for(int i = 1; i <= n; i++){
-    cin >> w[i] >> v[i];
+    cin >> weight[i] >> value[i];
   }
-  cout << knap(1, 0) << endl;
+  // recursive
+  cout << knapsack(1, 0) << endl;
+
+  // iterative
+  for(int i = n; i >= 1; i--){
+    for(int currentWeight = 0; currentWeight <= capacity; currentWeight++){
+      ll &ans = dp[i][currentWeight];
+      ans = 0;
+      ans = dp[i + 1][currentWeight];
+      if(currentWeight + weight[i] <= capacity) {
+        ans = max(ans, value[i] + dp[i + 1][currentWeight] + weight[i]);
+      }
+    }
+  }
+  cout << dp[1][0] << endl;
 
   return 0;
 }
