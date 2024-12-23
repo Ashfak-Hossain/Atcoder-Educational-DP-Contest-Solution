@@ -12,7 +12,6 @@ using namespace std;
 #define debug(...) 42
 #endif
 
-#define endl '\n'
 const int N = 1e5 + 9;
 const int inf = 1e9;
 
@@ -47,11 +46,11 @@ int32_t main() {
   }
   memset(dp, -1, sizeof dp);
 
-  // recursive
-  cout << frog(1) << endl;
-  cout << ffrog(n) << endl;
+  // Top-Down Approach
+  cout << frog(1) << "\n";
+  cout << ffrog(n) << "\n";
 
-  // iterative
+  // Bottom-Up Approach
   for(int i = n; i >= 1; i--) {
     if(i == n) {
       dp[i] = 0;
@@ -63,7 +62,7 @@ int32_t main() {
       }
     }
   }
-  cout << dp[1] << endl;
+  cout << dp[1] << "\n";
 
   return 0;
 }

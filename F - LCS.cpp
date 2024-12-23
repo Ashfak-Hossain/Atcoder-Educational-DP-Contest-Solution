@@ -12,7 +12,6 @@ using namespace std;
 #define debug(...) 42
 #endif
 
-#define endl '\n'
 const int N = 3005;
 
 string s, t;
@@ -54,6 +53,52 @@ int32_t main() {
   cin >> s >> t; 
   memset(dp, -1, sizeof dp);
   printLcs(0, 0);
+
+  return 0;
+}
+
+
+//* Bottom-Up Approach 
+
+constexpr int MAX_N = 3e3 + 9;
+
+int dp[MAX_N][MAX_N];
+
+int32_t main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  string s, t;
+  cin >> s >> t;
+
+  memset(dp, 0, sizeof dp);
+  int m = s.size(), n = t.size();
+
+  for(int i = 1; i <= m; i++){
+    for(int j = 1; j <= n; j++){
+      dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+      if(s[i - 1] == t[j - 1]) {
+        dp[i][j] =max(dp[i][j], dp[i - 1][j - 1] + 1);
+      }
+    }
+  }
+
+  string lcs;
+  int i = m, j = n;
+  while (i && j) {
+    if (s[i-1] == t[j-1]) {
+      lcs += s[i-1];
+      i--, j--;
+    } else if (dp[i][j-1] >= dp[i-1][j]) {
+      j--;
+    } else {
+      i--;
+    }
+  }
+
+  reverse(begin(lcs), end(lcs));
+
+  cout << lcs << "\n";
 
   return 0;
 }
